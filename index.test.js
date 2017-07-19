@@ -56,4 +56,9 @@ describe("mixed conditional queries", () => {
         const query = Queries.Query.create().and({id: 123}).or({version:2}).toMongoQuery();
         expect(query).toMatchObject({$and:[{id: 123}], $or:[{version:2}]});
     });
+
+    test('multiple and & or conditions', () => {
+        const query = spec.AndQuery.create({id: 123}).or({version:2}).or({country:"canada"}).and({lang:"US"}).toMongoQuery();
+        expect(query).toMatchObject({$and:[{id: 123}, {lang:"US"}], $or:[{version:2}, {country:"canada"}]});
+    });
 })
