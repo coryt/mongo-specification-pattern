@@ -58,6 +58,9 @@ class Query {
 class AndQuery extends Query {
     constructor(criteria, obj) {
         super(criteria);
+        if (this.criteria.$and == null) {
+            this.criteria.$and = [];
+        }
         if (typeof obj == "object" && obj.__proto__.constructor.name == "Query") {
             this.criteria.$and.push(obj.criteria);
         }
@@ -75,6 +78,9 @@ class AndQuery extends Query {
 class OrQuery extends Query {
     constructor(criteria, obj) {
         super(criteria);
+        if (this.criteria.$or == null) {
+            this.criteria.$or = [];
+        }
         if (typeof obj == "object" && obj.__proto__.constructor.name == "Query") {
             this.criteria.$or.push(obj.criteria);
         }
