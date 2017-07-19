@@ -18,85 +18,88 @@
 //     }
 // }
 
-class Query {
-    constructor(obj) {
+class BaseQuery {
+    constructor() {
         this.criteria = {};
-        if (obj !== null) {
-            this.criteria = Object.assign(this.criteria, obj);
-        }
-    }
-
-    static create(obj) {
-        return new Query(obj);
-    }
-
-    or(query) {
-        return new OrQuery(this.criteria, query);
-    }
-
-    and(query) {
-        return new AndQuery(this.criteria, query);
-    }
-
-    in(query) {
-        return this;
-    }
-    
-    not(query) {
-        return this;
-    }
-
-    toString() {
-        return `Query ${JSON.stringify(this)}`;
     }
 
     toMongoQuery() {
         return this.criteria;
     }
-}
 
-class AndQuery extends Query {
-    constructor(criteria, obj) {
-        super(criteria);
-        if (this.criteria.$and == null) {
-            this.criteria.$and = [];
-        }
-        if (typeof obj == "object" && obj.__proto__.constructor.name == "Query") {
-            this.criteria.$and.push(obj.criteria);
-        }
-        else {
-            this.criteria.$and.push(obj);
-        }
-        return this;
-    }
-
-    static create(query) {
-        return new AndQuery({$and:[]}, query);
+    toJSON() {
+        return `Query: ${JSON.stringify(this)}`;
     }
 }
 
-class OrQuery extends Query {
-    constructor(criteria, obj) {
-        super(criteria);
-        if (this.criteria.$or == null) {
-            this.criteria.$or = [];
+class SimpleQuery extends BaseQuery {
+    constructor(criteria) {
+        super();
+        this.criteria = criteria;
+    }
+
+    static create(criteria) {
+        return new SimpleQuery(criteria);
+    }
+}
+
+class Query extends BaseQuery {
+    constructor(criteria) {
+        super();
+        this.queries = [];
+        if (criteria != null) {
+            this.queries = [SimpleQuery.create(criteria)];
         }
-        if (typeof obj == "object" && obj.__proto__.constructor.name == "Query") {
-            this.criteria.$or.push(obj.criteria);
-        }
-        else {
-            this.criteria.$or.push(obj);
-        }
+    }
+
+    static create(criteria) {
+        return new Query(criteria);
+    }
+
+    or(...criteria) {
+        this.queries.push(OrQuery.create(criteria));
         return this;
     }
 
-    static create(query) {
-        return new OrQuery({$or:[]}, query);
+    and(...criteria) {
+        this.queries.push(AndQuery.create(criteria));
+        return this;
+    }
+
+    toMongoQuery() {
+        this.queries.forEach((query) => {
+            const mongoQuery = query.toMongoQuery();
+            Object.getOwnPropertyNames(mongoQuery).forEach((key) => {
+                this.criteria[key] = mongoQuery[key];
+            });
+        });
+        return super.toMongoQuery();
+    }
+}
+
+class AndQuery extends BaseQuery {
+    constructor(criteria) {
+        super();
+        this.criteria.$and = criteria;
+    }
+
+    static create(criteria) {
+        return new AndQuery(criteria);
+    }
+}
+
+class OrQuery extends BaseQuery {
+    constructor(criteria) {
+        super();
+        this.criteria.$or = criteria;
+    }
+
+    static create(criteria) {
+        return new OrQuery(criteria);
     }
 }
 
 module.exports = {
     Query: Query,
-    OrQuery: OrQuery,
-    AndQuery: AndQuery    
+    SimpleQuery: SimpleQuery  
 }
