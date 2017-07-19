@@ -18,15 +18,15 @@ describe("implicit AND queries", () => {
 })
 
 describe("explicit AND queries", () => {
-    test('single field', () => {
-        const query = new spec.Query({id: 123}).toMongoQuery();
-        expect(query).toMatchObject({id: 123});
+    test('single condition', () => {
+        const query = spec.AndQuery.create({id: 123}).toMongoQuery();
+        expect(query).toMatchObject({$and:[{id: 123}]});
     });
 
-    // test('multi-field', () => {
-    //     const query = new spec.Query({id: 123, version: 2, country:"Canada"}).toMongoQuery();
-    //     expect(query).toEqual({id: 123, version: 2, country:"Canada"});
-    // });
+    test('multi-condition', () => {
+        const query = spec.AndQuery.create({id: 123}).and({version:2}).toMongoQuery();
+        expect(query).toMatchObject({$and:[{id: 123},{version:2}]});
+    });
 
     // test('multi-field alt creation', () => {
     //     const query = spec.Query.create({id: 123, version: 2, country:"Canada"}).toMongoQuery();
