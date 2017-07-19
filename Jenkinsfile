@@ -1,10 +1,5 @@
 pipeline {
-  agent {
-    docker {
-      image 'node'
-    }
-    
-  }
+  agent none
   stages {
     stage('print stuff') {
       steps {
@@ -14,7 +9,7 @@ pipeline {
     stage('print more stuff') {
       steps {
         echo 'more stuff'
-        echo $id
+        echo '${$id}'
       }
     }
   }
