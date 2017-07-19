@@ -31,7 +31,7 @@ class Query {
     }
 
     or(query) {
-        return new OrQuery(this, query);
+        return new OrQuery(this.criteria, query);
     }
 
     and(query) {
@@ -73,8 +73,8 @@ class AndQuery extends Query {
 }
 
 class OrQuery extends Query {
-    constructor(obj) {
-        super({$or:[]});
+    constructor(criteria, obj) {
+        super(criteria);
         if (typeof obj == "object" && obj.__proto__.constructor.name == "Query") {
             this.criteria.$or.push(obj.criteria);
         }
@@ -85,7 +85,7 @@ class OrQuery extends Query {
     }
 
     static create(query) {
-        return new OrQuery(query);
+        return new OrQuery({$or:[]}, query);
     }
 }
 

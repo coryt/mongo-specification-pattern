@@ -34,6 +34,24 @@ describe("explicit AND queries", () => {
     });
 })
 
+
+describe("explicit OR queries", () => {
+    test('single condition', () => {
+        const query = spec.OrQuery.create({id: 123}).toMongoQuery();
+        expect(query).toMatchObject({$or:[{id: 123}]});
+    });
+
+    test('multi-condition', () => {
+        const query = spec.OrQuery.create({id: 123}).or({version:2}).toMongoQuery();
+        expect(query).toMatchObject({$or:[{id: 123},{version:2}]});
+    });
+
+    test('multi-condition chain', () => {
+        const query = spec.OrQuery.create({id: 123}).or({version:2}).or({country:"canada"}).toMongoQuery();
+        expect(query).toMatchObject({$or:[{id: 123},{version:2},{country:"canada"}]});
+    });
+})
+
 // // id > 123 && (id: 123 || v: 2)
 // const orQ1 = OrQuery.create(new Query({id: 123}));
 // console.log("orQ1------------", orQ1.toMongoQuery());
