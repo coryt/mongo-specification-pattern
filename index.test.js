@@ -28,10 +28,10 @@ describe("explicit AND queries", () => {
         expect(query).toMatchObject({$and:[{id: 123},{version:2}]});
     });
 
-    // test('multi-field alt creation', () => {
-    //     const query = spec.Query.create({id: 123, version: 2, country:"Canada"}).toMongoQuery();
-    //     expect(query).toEqual({id: 123, version: 2, country:"Canada"});
-    // });
+    test('multi-condition chain', () => {
+        const query = spec.AndQuery.create({id: 123}).and({version:2}).and({country:"canada"}).toMongoQuery();
+        expect(query).toMatchObject({$and:[{id: 123},{version:2},{country:"canada"}]});
+    });
 })
 
 // // id > 123 && (id: 123 || v: 2)

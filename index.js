@@ -1,16 +1,5 @@
 "use strict";
 
-// class SimpleQuery extends BaseQuery {
-//     constructor(obj) {
-//         super();
-//         this.criteria = Object.assign(this.criteria, obj);
-//     }
-
-//     static create(obj) {
-//         return new SimpleQuery(obj);
-//     }
-// }
-
 // class GreaterThanQuery extends BaseQuery {
 //     constructor(key, value) {
 //         super();
@@ -42,11 +31,11 @@ class Query {
     }
 
     or(query) {
-        return new OrQuery(query);
+        return new OrQuery(this, query);
     }
 
     and(query) {
-        return new AndQuery(this, query);
+        return new AndQuery(this.criteria, query);
     }
 
     in(query) {
