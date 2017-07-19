@@ -1,0 +1,22 @@
+{
+  "name": "mongo-specification-pattern",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coryt/mongo-specification-pattern.git"
+  },
+  "author": "Cory Taylor",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/coryt/mongo-specification-pattern/issues"
+  },
+  "homepage": "https://github.com/coryt/mongo-specification-pattern#readme",
+  "devDependencies": {
+    "jest": "^20.0.4"
+  }
+}
