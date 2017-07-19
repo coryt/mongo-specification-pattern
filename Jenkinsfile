@@ -6,19 +6,18 @@ pipeline {
     
   }
   stages {
-    stage('') {
+    stage('print stuff') {
       steps {
-        parallel(
-          "print": {
-            echo 'test'
-            
-          },
-          "print 2": {
-            echo 'test 2'
-            
-          }
-        )
+        echo 'stuff'
       }
     }
+    stage('print more stuff') {
+      steps {
+        echo 'more stuff'
+      }
+    }
+  }
+  environment {
+    id = '123'
   }
 }
