@@ -1,19 +1,5 @@
 "use strict";
 
-class BaseQuery {
-    constructor() {
-        this.criteria = {};
-    }
-
-    toString() {
-        return `Query ${JSON.stringify(this)}`;
-    }
-
-    toMongoQuery() {
-        return this.criteria;
-    }
-}
-
 // class SimpleQuery extends BaseQuery {
 //     constructor(obj) {
 //         super();
@@ -43,16 +29,12 @@ class BaseQuery {
 //     }
 // }
 
-class Query extends BaseQuery {
+class Query {
     constructor(obj) {
-        super();
+        this.criteria = {};
         if (obj !== null) {
             this.criteria = Object.assign(this.criteria, obj);
         }
-        // this.criteria = {
-        //     $or: [],
-        //     $and: []
-        // }
     }
 
     static create(obj) {
@@ -60,7 +42,7 @@ class Query extends BaseQuery {
     }
 
     or(query) {
-        return new OrQuery(this, query);
+        return new OrQuery(query);
     }
 
     and(query) {
@@ -74,12 +56,19 @@ class Query extends BaseQuery {
     not(query) {
         return this;
     }
+
+    toString() {
+        return `Query ${JSON.stringify(this)}`;
+    }
+
+    toMongoQuery() {
+        return this.criteria;
+    }
 }
 
-
 class AndQuery extends Query {
-    constructor(obj) {
-        super({$and:[]});
+    constructor(criteria, obj) {
+        super(criteria);
         if (typeof obj == "object" && obj.__proto__.constructor.name == "Query") {
             this.criteria.$and.push(obj.criteria);
         }
@@ -90,7 +79,7 @@ class AndQuery extends Query {
     }
 
     static create(query) {
-        return new OrQuery(query);
+        return new AndQuery({$and:[]}, query);
     }
 }
 
