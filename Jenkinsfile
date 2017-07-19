@@ -14,6 +14,7 @@ pipeline {
     stage('print more stuff') {
       steps {
         echo 'more stuff'
+        echo $id
       }
     }
   }
